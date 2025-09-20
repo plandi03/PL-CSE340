@@ -1,0 +1,14 @@
+<!-- filepath: d:\CSE340\CSE340\views\inventory\classification.ejs -->
+
+<% /* Content Heading: Shows the page title as an <h1> or redirects home if missing */ %>
+<% if (title) { %>
+  <h1><%= title %></h1>
+<% } else {
+  res.redirect('/')
+} %>
+
+<% /* Message Block: For future messages (currently commented out) */ %>
+<%# messages() %>
+
+<% /* Inventory Items Display: Shows the inventory grid */ %>
+<%- grid %>
