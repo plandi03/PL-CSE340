@@ -23,6 +23,12 @@ app.use(expressLayouts)
  *************************/
 app.use(static)
 
+// Add inventory route
+const inventoryRoutes = require("./routes/inventoryRoute")
+app.use("/inventory", inventoryRoutes)
+
+
+
 // index route  
 app.get("/", function(req, res) {
   res.render("index", { title: "Home" })

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles/site.css">
+</head>
+<body>
+  <main class="container">
+    <h1><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
+
+    <div class="detail-grid">
+      <figure>
+        <img src="/images/<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" />
+      </figure>
+
+      <section>
+        <p><strong>Price:</strong> <%= formattedPrice %></p>
+        <p><strong>Mileage:</strong> <%= formattedMiles %> miles</p>
+        <p><strong>Color:</strong> <%= vehicle.inv_color %></p>
+        <h3>Description</h3>
+        <p><%= vehicle.inv_description %></p>
+      </section>
+    </div>
+
+    <a href="/inventory" class="btn">Back to Inventory</a>
+  </main>
+</body>
+</html>
