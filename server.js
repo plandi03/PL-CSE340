@@ -16,30 +16,72 @@ const expressLayouts = require("express-ejs-layouts")
  *************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
-/app.set("layout", "./layouts/layout") // not at views root
+app.set("layout", "./layouts/layout")
+
+/* ***********************
+ * Navigation Middleware - Makes nav available to all views
+ *************************/
+app.use(async (req, res, next) => {
+  try {
+    const utilities = require("./utilities")
+    res.locals.nav = await utilities.getNav()
+    next()
+  } catch (error) {
+    console.error("Navigation middleware error:", error)
+    res.locals.nav = "<ul><li><a href='/'>Home</a></li></ul>"
+    next()
+  }
+})
 
 /* ***********************
  * Routes
  *************************/
 app.use(static)
 
-// Add inventory route
+// Regular routes
 const inventoryRoutes = require("./routes/inventoryRoute")
 app.use("/inventory", inventoryRoutes)
 
+// Error handling route for Task 3
+app.get("/error", (req, res, next) => {
+  const error = new Error("Intentional server error for testing")
+  error.status = 500
+  next(error)
+})
 
-
-// index route  
+// Index route  
 app.get("/", function(req, res) {
   res.render("index", { title: "Home" })
+})
+
+// 404 Error handler - This should be AFTER all other routes
+app.use((req, res, next) => {
+  const error = new Error(`Page not found: ${req.originalUrl}`)
+  error.status = 404
+  next(error)
+})
+
+// Error handling middleware - This should be LAST
+app.use((err, req, res, next) => {
+  const status = err.status || 500
+  const message = err.message || "Internal Server Error"
+  
+  console.error("Error occurred:", err)
+  
+  res.status(status)
+  res.render("errors/error", {
+    title: `Error ${status}`,
+    message: message,
+    status: status
+  })
 })
 
 /* ***********************
  * Local Server Information
  * Values from .env (environment) file
  *************************/
-const port = process.env.PORT
-const host = process.env.HOST
+const port = process.env.PORT || 5500
+const host = process.env.HOST || 'localhost'
 
 /* ***********************
  * Log statement to confirm server operation
@@ -47,3 +89,4 @@ const host = process.env.HOST
 app.listen(port, () => {
   console.log(`app listening on ${host}:${port}`)
 })
+
