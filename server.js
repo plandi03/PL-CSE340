@@ -75,6 +75,10 @@ app.get("/error", (req, res, next) => {
   next(error)
 })
 
+// Account routes
+const accountRoutes = require("./routes/accountRoute")
+app.use("/account", accountRoutes)
+
 // Index route  
 app.get("/", function(req, res) {
   res.render("index", { title: "Home" })
