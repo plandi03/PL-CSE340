@@ -1183,3 +1183,199 @@ nav a:hover {
 .form-group input:user-valid {
   border-color: #27ae60;
 }
+
+/* manage page */
+
+.management-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+.management-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.management-card {
+  background: #fff;
+  border: 2px solid #3498db;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.management-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(52, 152, 219, 0.3);
+}
+
+.management-card h2 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.management-card p {
+  color: #7f8c8d;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+}
+
+/*add-classification page*/
+
+.add-classification-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-instructions {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.classification-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.classification-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.classification-form input[type="text"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.classification-form input[type="text"]:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.classification-form input[type="text"]:invalid {
+  border-color: #e74c3c;
+}
+
+.classification-form input[type="text"]:valid {
+  border-color: #27ae60;
+}
+
+.input-help {
+  display: block;
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  margin-top: 0.25rem;
+}
+
+.btn-submit {
+  background-color: #27ae60;
+  color: white;
+}
+
+.btn-submit:hover {
+  background-color: #229954;
+}
+
+.btn-cancel {
+  background-color: #95a5a6;
+  color: white;
+  margin-left: 1rem;
+}
+
+.btn-cancel:hover {
+  background-color: #7f8c8d;
+}
+
+/* add-vehicle page */
+
+.add-inventory-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.inventory-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.inventory-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.inventory-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.inventory-form input[type="text"],
+.inventory-form input[type="number"],
+.inventory-form select,
+.inventory-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.inventory-form input:focus,
+.inventory-form select:focus,
+.inventory-form textarea:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.inventory-form textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+#classificationList {
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .inventory-form .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
