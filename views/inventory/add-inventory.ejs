@@ -11,7 +11,7 @@
     </div>
   <% } %>
 
-  <form action="../inventory/add-inventory.ejs" method="post" class="inventory-form">
+  <form action="/inventory/add-inventory" method="post" class="inventory-form">
     <div class="form-row">
       <div class="form-group">
         <label for="classification_id">Classification:</label>
@@ -94,7 +94,41 @@
 
     <div class="form-group">
       <button type="submit" class="btn btn-submit">Add Vehicle</button>
-      <a href="../inventory/" class="btn btn-cancel">Cancel</a>
+      <a href="/inventory" class="btn btn-cancel">Cancel</a>
     </div>
   </form>
 </div>
+
+<script>
+// Client-side validation for add inventory form
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('.inventory-form');
+  
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      const year = document.getElementById('inv_year').value;
+      const currentYear = new Date().getFullYear();
+      
+      if (year < 1900 || year > currentYear + 1) {
+        e.preventDefault();
+        alert('Please enter a valid year between 1900 and ' + (currentYear + 1));
+        return false;
+      }
+      
+      const price = document.getElementById('inv_price').value;
+      if (price < 0) {
+        e.preventDefault();
+        alert('Price must be a positive number');
+        return false;
+      }
+      
+      const miles = document.getElementById('inv_miles').value;
+      if (miles < 0) {
+        e.preventDefault();
+        alert('Mileage must be a positive number');
+        return false;
+      }
+    });
+  }
+});
+</script>
