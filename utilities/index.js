@@ -1,4 +1,6 @@
 const invModel = require("../models/inventory-model")
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 const Util = {}
 
 /* ************************
@@ -116,38 +118,6 @@ Util.formatNumberWithCommas = function(value) {
   return value.toLocaleString('en-US')
 }
 
-/* ************************
- * Build vehicle detail HTML
- ************************** */
-Util.buildVehicleDetailHTML = function(vehicle) {
-  if (!vehicle) return '<p>Vehicle details not available.</p>'
-
-  const price = Util.formatUSD(Number(vehicle.inv_price))
-  const miles = Util.formatNumberWithCommas(Number(vehicle.inv_miles))
-  const title = `${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}`
-
-  return `
-    <div class="vehicle-detail-container">
-      <div class="vehicle-image">
-        <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}" />
-      </div>
-      <div class="vehicle-info">
-        <h2>${title}</h2>
-        <div class="vehicle-specs">
-          <p><strong>Price:</strong> ${price}</p>
-          <p><strong>Mileage:</strong> ${miles} miles</p>
-          <p><strong>Color:</strong> ${vehicle.inv_color || 'N/A'}</p>
-          <p><strong>Year:</strong> ${vehicle.inv_year}</p>
-        </div>
-        <div class="vehicle-description">
-          <h3>Description</h3>
-          <p>${vehicle.inv_description || 'No description available.'}</p>
-        </div>
-      </div>
-    </div>
-  `
-}
-
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 
@@ -175,6 +145,60 @@ Util.buildClassificationList = async function (classification_id = null) {
   })
   classificationList += "</select>"
   return classificationList
+}
+
+/* ****************************************
+ * Middleware to check token validity
+ **************************************** */
+Util.checkJWTToken = (req, res, next) => {
+  if (req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("notice", "Please log in")
+          res.clearCookie("jwt")
+          return res.redirect("/account/login")
+        }
+        res.locals.accountData = accountData
+        res.locals.loggedin = 1
+        next()
+      }
+    )
+  } else {
+    next()
+  }
+}
+
+/* ****************************************
+ *  Check Login - for protected routes
+ * ************************************ */
+Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedin) {
+    next()
+  } else {
+    req.flash("notice", "Please log in.")
+    return res.redirect("/account/login")
+  }
+}
+
+/* ****************************************
+ *  Check account type (Employee or Admin)
+ * ************************************ */
+Util.checkAccountType = (req, res, next) => {
+  if (res.locals.loggedin) {
+    const accountType = res.locals.accountData.account_type
+    if (accountType === 'Employee' || accountType === 'Admin') {
+      next()
+    } else {
+      req.flash("notice", "You do not have permission to access this resource.")
+      return res.redirect("/account/login")
+    }
+  } else {
+    req.flash("notice", "Please log in.")
+    return res.redirect("/account/login")
+  }
 }
 
 module.exports = Util

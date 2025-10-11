@@ -109,7 +109,7 @@ app.use((err, req, res, next) => {
   })
 })
 
- app.use('/account', accountRoutes)
+app.use('/account', accountRoutes)
 
 /* ***********************
  * Local Server Information
