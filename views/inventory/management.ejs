@@ -16,4 +16,84 @@
       <a href="/inventory/add-inventory" class="btn btn-primary">Add Vehicle</a>
     </div>
   </div>
+
+  <%- messages() %>
+<h1><%= title %></h1>
+
+<div class="management-links">
+  <h2>Management Options</h2>
+  <ul>
+    <li><a href="/inventory/add-classification">Add New Classification</a></li>
+    <li><a href="/inventory/add-inventory">Add New Vehicle</a></li>
+  </ul>
 </div>
+
+<div class="info-section">
+  <h2>Edit or Delete Vehicles</h2>
+  <p>To manage existing vehicles:</p>
+  <ol>
+    <li>Navigate to a classification using the menu above</li>
+    <li>Click on a vehicle to view its details</li>
+    <li>Use the "Delete" link on the vehicle detail page</li>
+  </ol>
+</div>
+
+<script>
+// Populate classification dropdown on page load
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    const response = await fetch('/inventory/getClassifications');
+    const data = await response.json();
+    
+    const select = document.getElementById('classificationList');
+    data.forEach(classification => {
+      const option = document.createElement('option');
+      option.value = classification.classification_id;
+      option.textContent = classification.classification_name;
+      select.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error loading classifications:', error);
+  }
+});
+
+// Show inventory items for selected classification
+async function showInventory() {
+  const classificationId = document.getElementById('classificationList').value;
+  const displayDiv = document.getElementById('inventoryDisplay');
+  
+  if (!classificationId) {
+    displayDiv.innerHTML = '';
+    return;
+  }
+  
+  try {
+    const response = await fetch(`/inventory/getInventory/${classificationId}`);
+    const data = await response.json();
+    
+    if (data.length === 0) {
+      displayDiv.innerHTML = '<p>No vehicles found in this classification.</p>';
+      return;
+    }
+    
+    let html = '<table class="inventory-table"><thead><tr>' +
+               '<th>Vehicle</th><th>Actions</th></tr></thead><tbody>';
+    
+    data.forEach(item => {
+      html += `<tr>
+        <td>${item.inv_year} ${item.inv_make} ${item.inv_model}</td>
+        <td>
+          <a href="/inventory/edit/${item.inv_id}" class="btn btn-edit">Edit</a>
+          <a href="/inventory/delete/${item.inv_id}" class="btn btn-delete">Delete</a>
+        </td>
+      </tr>`;
+    });
+    
+    html += '</tbody></table>';
+    displayDiv.innerHTML = html;
+  } catch (error) {
+    console.error('Error loading inventory:', error);
+    displayDiv.innerHTML = '<p>Error loading inventory items.</p>';
+  }
+}
+</script>

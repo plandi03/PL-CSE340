@@ -26,6 +26,11 @@
         <h3>Description</h3>
         <p><%= vehicle.inv_description %></p>
       </div>
+
+      <!-- Management Links -->
+      <div class="vehicle-management">
+        <a href="/inventory/delete/<%= vehicle.inv_id %>" class="btn btn-delete">Delete Vehicle</a>
+      </div>
     </div>
   </div>
   
