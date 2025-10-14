@@ -46,6 +46,20 @@ router.post(
   utilities.handleErrors(invController.addInventory)
 )
 
+// Route to build edit inventory view (PROTECTED)
+router.get("/edit/:inv_id", 
+  utilities.checkAccountType,
+  utilities.handleErrors(invController.buildEditInventory)
+)
+
+// Route to process the update (PROTECTED)
+router.post("/update", 
+  utilities.checkAccountType,
+  validate.inventoryRules(),
+  validate.checkUpdateData,
+  utilities.handleErrors(invController.updateInventory)
+)
+
 // Route to build delete confirmation view (PROTECTED)
 router.get("/delete/:inv_id", 
   utilities.checkAccountType,

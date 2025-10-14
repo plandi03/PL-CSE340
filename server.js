@@ -12,11 +12,14 @@ const static = require("./routes/static")
 const expressLayouts = require("express-ejs-layouts")
 const session = require("express-session")
 const pool = require('./database/')
+const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
+const utilities = require("./utilities")
 
 /* ***********************
  * Middleware
  * ************************/
- app.use(session({
+app.use(session({
   store: new (require('connect-pg-simple')(session))({
     createTableIfMissing: true,
     pool,
@@ -34,11 +37,20 @@ app.use(function(req, res, next){
   next()
 })
 
-const bodyParser = require("body-parser")
+// Body Parser Middleware
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }))
 
+// Cookie Parser Middleware
+app.use(cookieParser())
 
+// JWT Token Check Middleware
+app.use(utilities.checkJWTToken)
+
+app.use(async (req, res, next) => {
+  res.locals.nav = await utilities.getNav()
+  next()
+})
 
 /* ***********************
  * View Engine and Templates
@@ -48,43 +60,28 @@ app.use(expressLayouts)
 app.set("layout", "./layouts/layout")
 
 /* ***********************
- * Navigation Middleware - Makes nav available to all views
- *************************/
-app.use(async (req, res, next) => {
-  try {
-    const utilities = require("./utilities")
-    res.locals.nav = await utilities.getNav()
-    next()
-  } catch (error) {
-    console.error("Navigation middleware error:", error)
-    res.locals.nav = "<ul><li><a href='/'>Home</a></li></ul>"
-    next()
-  }
-})
-
-/* ***********************
  * Routes
  *************************/
 app.use(static)
 
-// Regular routes
+// Index route  
+app.get("/", function(req, res) {
+  res.render("index", { title: "Home" })
+})
+
+// Inventory routes
 const inventoryRoutes = require("./routes/inventoryRoute")
 app.use("/inventory", inventoryRoutes)
-
-// Error handling route for Task 3
-app.get("/error", (req, res, next) => {
-  const error = new Error("Intentional server error for testing")
-  error.status = 500
-  next(error)
-})
 
 // Account routes
 const accountRoutes = require("./routes/accountRoute")
 app.use("/account", accountRoutes)
 
-// Index route  
-app.get("/", function(req, res) {
-  res.render("index", { title: "Home" })
+// Error handling route for testing
+app.get("/error", (req, res, next) => {
+  const error = new Error("Intentional server error for testing")
+  error.status = 500
+  next(error)
 })
 
 // 404 Error handler - This should be AFTER all other routes
@@ -109,8 +106,6 @@ app.use((err, req, res, next) => {
   })
 })
 
-app.use('/account', accountRoutes)
-
 /* ***********************
  * Local Server Information
  * Values from .env (environment) file
@@ -124,4 +119,3 @@ const host = process.env.HOST || 'localhost'
 app.listen(port, () => {
   console.log(`app listening on ${host}:${port}`)
 })
-
